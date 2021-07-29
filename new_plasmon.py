@@ -31,12 +31,15 @@ else:
 fpga.write_int('fft_shift', 2**9)
 fpga.write_int('mux_select', 0) # 0 for constant, 1 for multiply
 fpga.write_int('cordic_freq', 2) # 
-fpga.write_int('sync_accum_len', 2**19-1) # 2**19/2**9 = 1024 accumulations
+fpga.write_int('sync_accum_len', 2**24-1) # 2**19/2**9 = 1024 accumulations
 fpga.write_int('sync_accum_reset', 0) #
 fpga.write_int('sync_accum_reset', 1) #
 fpga.write_int('sync_accum_reset', 0) #
 fpga.write_int('start_dac', 0) #
 fpga.write_int('start_dac', 1) #
+
+sec_convert = (7812.5)**(-1) #number of 2^24 accum dumps needed for one sec of integration
+ms_convert = 0.128 #same as above, just for a ms of integration
 
 plt.ion()
 
@@ -94,13 +97,26 @@ def plotAccum():
             count += 1
         return
 
-def save_accum(bin):
+def save_accum(num_ms):
+		dumps = round(num_ms/ms_convert) 
 		I, Q = read_accum_snap()
 		I = I[2:]
 		Q = Q[2:]
 		mags =(np.sqrt(I**2 + Q**2))[:1016]
 		mags = 10*np.log10(mags+1e-20)[:1016]
-		peak = max(mags)
+		accum_mags = mags
+		count = 0
+		
+		while (count < dumps):
+			I, Q = read_accum_snap()
+			I = I[2:]
+			Q = Q[2:]
+			mags =(np.sqrt(I**2 + Q**2))[:1016]
+			mags = 10*np.log10(mags+1e-20)[:1016]
+			accum_mags += mags
+			count +=1
+						
+		peak = max(accum_mags)
 		maxbin = index.mags(peak)
 		print("Maximum power is at bin " + maxbin + " with a power of " + peak)
 		
@@ -113,7 +129,8 @@ def read_accum_snap():
         fpga.write_int('accum_snap_accum_snap_ctrl', 0)
         fpga.write_int('accum_snap_accum_snap_ctrl', 1)
         accum_data = np.fromstring(fpga.read('accum_snap_accum_snap_bram', 16*2**9), dtype = '>i').astype('float')
-        I = accum_data[0::2]
+        #data type for accum_data may have to be wonked with
+		I = accum_data[0::2]
         Q = accum_data[1::2]
         return I, Q
 
