@@ -38,8 +38,8 @@ fpga.write_int('sync_accum_reset', 0) #
 fpga.write_int('start_dac', 0) #
 fpga.write_int('start_dac', 1) #
 
-sec_convert = (7812.5)**(-1) #number of 2^24 accum dumps needed for one sec of integration
-ms_convert = 0.128 #same as above, just for a ms of integration
+sec_convert = (7812.5*2)**(-1) #number of 2^24 accum dumps needed for one sec of integration
+ms_convert = 0.064 #same as above, just for a ms of integration
 
 plt.ion()
 
@@ -130,7 +130,7 @@ def read_accum_snap():
         fpga.write_int('accum_snap_accum_snap_ctrl', 1)
         accum_data = np.fromstring(fpga.read('accum_snap_accum_snap_bram', 16*2**9), dtype = '>i').astype('float')
         #data type for accum_data may have to be wonked with
-		I = accum_data[0::2]
+	I = accum_data[0::2]
         Q = accum_data[1::2]
         return I, Q
 
