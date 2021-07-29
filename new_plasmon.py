@@ -116,12 +116,12 @@ def save_accum(num_ms):
 			accum_mags += mags
 			count +=1
 						
-		peak = max(accum_mags)
+                peak = max(accum_mags[0:250])
 		maxbin = np.where(np.isclose(accum_mags, peak))
 		print("Maximum power is at bin ")
                 print(maxbin)
                 print(" with a power of ")
-                print(peak)
+                print(peak/count)
 		
 		
 		
