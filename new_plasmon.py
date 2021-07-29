@@ -117,8 +117,11 @@ def save_accum(num_ms):
 			count +=1
 						
 		peak = max(accum_mags)
-		maxbin = index.mags(peak)
-		print("Maximum power is at bin " + maxbin + " with a power of " + peak)
+		maxbin = np.where(np.isclose(accum_mags, peak))
+		print("Maximum power is at bin ")
+                print(maxbin)
+                print(" with a power of ")
+                print(peak)
 		
 		
 		
