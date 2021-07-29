@@ -31,7 +31,7 @@ else:
 fpga.write_int('fft_shift', 2**9)
 fpga.write_int('mux_select', 0) # 0 for constant, 1 for multiply
 fpga.write_int('cordic_freq', 2) # 
-fpga.write_int('sync_accum_len', 2**24-1) # 2**19/2**9 = 1024 accumulations
+fpga.write_int('sync_accum_len', 2**23-1) # 2**19/2**9 = 1024 accumulations
 fpga.write_int('sync_accum_reset', 0) #
 fpga.write_int('sync_accum_reset', 1) #
 fpga.write_int('sync_accum_reset', 0) #
