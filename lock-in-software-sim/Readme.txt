@@ -1,0 +1,1 @@
+This is where Im keeping all of the saftware simulations for the lock in firmware. Its all in python and vectorized so dont get all up in my grill about how I cant code in C. I mean you are right, I cant code in C but thats besides the point.
